@@ -10,5 +10,5 @@ if __name__ == '__main__':
     github_host = '{}.github.io/{}'.format(username, repo)
     pages_host = '{}/{}'.format(username, repo)
     telegram_chat_id = config.get('chat_id', 0)
-    print(' '.join(['./conspectus-framework/script/build.sh', pages_host, github_host, str(telegram_chat_id)]))
-    # subprocess.run(['./script/build.sh', pages_host, github_host, str(telegram_chat_id)])
+    # print(' '.join(['./conspectus-framework/script/build.sh', pages_host, github_host, str(telegram_chat_id)]))
+    subprocess.run(['./conspectus-framework/script/build.sh', pages_host, github_host, str(telegram_chat_id)])

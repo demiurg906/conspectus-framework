@@ -292,6 +292,8 @@ def generate_htmls(github_host, pages_host, input_folder='./conspectus-framework
     html_filenames = []
     new_issue = 'https://github.com/{}/issues/new'.format(github_host)
     for file in files:
+        if file == 'template.html':
+            continue
         filename = '{}/{}'.format(input_folder, file)
         with open(filename) as f:
             content = ''.join(f.readlines())
@@ -305,7 +307,7 @@ def generate_htmls(github_host, pages_host, input_folder='./conspectus-framework
         terms_file = filename.replace('.html', '.terms.json')
         terms_json = generate_terms_info(terms_file)
 
-        md_file = 'source/{}'.format(file.replace('.html', '.md'))
+        md_file = '{}'.format(file.replace('.html', '.md'))
         meta_title = 'Конспект по алгоритмам'
         with open(md_file) as f:
             for line in f:
@@ -326,7 +328,7 @@ def generate_htmls(github_host, pages_host, input_folder='./conspectus-framework
         }))
 
     toc = generate_toc(toc_list)
-    with open('./terms/n_template.html') as f:
+    with open('./conspectus-framework/terms/n_template.html') as f:
         ninja_template = ''.join(f.readlines())
         ninja_template = Template(ninja_template)
 
