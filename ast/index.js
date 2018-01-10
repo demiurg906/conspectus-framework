@@ -1,35 +1,35 @@
-const path = require('path')
+const path = require('path');
 const unified = require('unified');
 const remarkParse = require('remark-parse');
-const rehypeParse = require('rehype-parse')
+const rehypeParse = require('rehype-parse');
 const remarkRehype = require('remark-rehype');
 const remarkStringify = require('remark-stringify');
 const rehypeStringify = require('rehype-stringify');
-const rehypeAutolink = require('rehype-autolink-headings')
-const rehypeSlug = require('rehype-slug')
-const doc = require('rehype-document')
-const vfile = require('to-vfile')
-const deepClone = require('lodash/fp/cloneDeep')
-const math = require('remark-math')
-const highlight = require('remark-highlight.js')
+const rehypeAutolink = require('rehype-autolink-headings');
+const rehypeSlug = require('rehype-slug');
+const doc = require('rehype-document');
+const vfile = require('to-vfile');
+const deepClone = require('lodash/fp/cloneDeep');
+const math = require('remark-math');
+const highlight = require('remark-highlight.js');
 const fs = require('fs');
 
-process.argv.length <3 && (console.log(`node ${path.basename(process.argv[1])} source.md`) || process.exit(0))
+process.argv.length <3 && (console.log(`node ${path.basename(process.argv[1])} source.md`) || process.exit(0));
 
-var headers = []
-var terms = []
-var description = ""
+var headers = [];
+var terms = [];
+var description = "";
 
 
 function addSpanToEmp(options = {}) {
-    return (node, file) => { span(node) }
+    return (node, file) => { span(node) };
 
     function span(node) {
         if (node.type == "emphasis") {
-            node.type = "html"
-            text = node.children[0].value
-            node.value = `<a class="term">${text}</a>`
-            delete node.children
+            node.type = "html";
+            text = node.children[0].value;
+            node.value = `<a class="term">${text}</a>`;
+            delete node.children;
             terms.push(text)
         }
         else (node.children || []).forEach(span)
@@ -42,17 +42,17 @@ function print(options = {}) {
 }
 
 function addTagToList(options = {}) {
-    return (node, file) => { tag(node) }
+    return (node, file) => { tag(node) };
 
     function tag(node) {
         if (node.type == "element" && node.tagName[0] == "h") {
-            tagNumber = parseInt(node.tagName[1]) || 0
+            tagNumber = parseInt(node.tagName[1]) || 0;
             if ([1,2,3,4,5,6].indexOf(tagNumber) != -1) {
-                objHeader = {}
-                objHeader.anchor = node.properties.id
-                objHeader.tag = tagNumber
+                objHeader = {};
+                objHeader.anchor = node.properties.id;
+                objHeader.tag = tagNumber;
                 for (i = 0; i < node.children.length; ++i) {
-                    child = node.children[i]
+                    child = node.children[i];
                     if (child.type == "text") {
                         objHeader.title = child.value
                     }
@@ -65,14 +65,14 @@ function addTagToList(options = {}) {
 }
 
 function formulasProcessing(options = {}) {
-    return (node, file) => { addDollars(node) }
+    return (node, file) => { addDollars(node) };
 
     function addDollars(node) {
         if (node.type == "element" && node.properties.className == "inlineMath")
             for (i = 0; i < node.children.length; ++i) {
-                child = node.children[i]
+                child = node.children[i];
                 if (child.type == "text") {
-                    text = child.value
+                    text = child.value;
                     child.value = "$" + text + "$"
                 }
             }
@@ -82,22 +82,22 @@ function formulasProcessing(options = {}) {
 
 
 function exptractDescription(options = {}) {
-    return (node, file) => { extract(node) }
+    return (node, file) => { extract(node) };
 
     function extract(node) {
         if (node.type == "code" || node.type == "table" ||
             (node.type == "heading" && node.depth == 1))
                 return;
         if (node.type == "text" || node.type == "inlineMath")
-            description += node.value + " "
+            description += node.value + " ";
         else
             (node.children || []).forEach(extract)
     }
 }
 
 
-sourceFileName = process.argv[2]
-sourceFile = vfile.readSync(sourceFileName)
+sourceFileName = process.argv[2];
+sourceFile = vfile.readSync(sourceFileName);
 
 unified()
   .use(remarkParse)
@@ -113,10 +113,10 @@ unified()
   .use(rehypeStringify, { allowDangerousHTML: true })
   .process(sourceFile)
   .then(file => {
-    file.extname = ".html"
+    file.extname = ".html";
     vfile.writeSync(file)
   })
-  .catch(err => console.log('errors: ', err))
+  .catch(err => console.log('errors: ', err));
 
 termsFileName = sourceFileName.substr(0, sourceFileName.lastIndexOf(".")) + ".terms.json";
 fs.writeFile(termsFileName, JSON.stringify(terms),

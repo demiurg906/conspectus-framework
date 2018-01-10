@@ -15,15 +15,6 @@ cache:
   directories:
     - node_modules
 
-# before_install:
-#   - sudo add-apt-repository ppa:bauruine/sshpass -y
-#   - sudo apt-get update -q
-
-# addons:
-#   apt:
-#     packages:
-#       - "sshpass"
-
 before_script:
   - (cd ast && yarn)
   - (cd telegram && yarn)

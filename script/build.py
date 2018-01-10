@@ -2,7 +2,7 @@ import json
 import subprocess
 
 if __name__ == '__main__':
-    with open('config.json') as f:
+    with open('../config.json') as f:
         config = json.load(f)
 
     username = config.get('username')
