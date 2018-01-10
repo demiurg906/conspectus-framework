@@ -26,18 +26,18 @@ git clone "https://${GH_TOKEN}@github.com/${1}.git" --branch gh-pages --depth=1 
 touch ./_site/.nojekyll 2>/dev/null || :
 
 # make the template accessible from current dir
-ln -s ./ast/template.html 2>/dev/null || :
+ln -s ./conspectus-framework/ast/template.html 2>/dev/null || :
 
 # using the template, convert source markdown to html + json
 mkdir ./input 2>/dev/null || :
-find ./source -name '*.md' -print0 | xargs -n1 --null -t -I {} -- node ./ast/index.js {}
+find . -maxdepth 1 -name '*md' ! -name 'README.md' -print0 | xargs -n1 --null -t -I {} -- node ./conspectus-framework/ast/index.js {}
 
 # generate the contents, move images & htmls the root folder
-python ./terms/generate_html.py "${1}" "${2}" ./source ./_site
+python ./conspectus-framework/terms/generate_html.py "${1}" "${2}" . ./_site
 cp ./source/*.jpg ./source/*.png ./source/*.svg ./_site 2> /dev/null || :
 
 mkdir -p ./_site/assets
-cp ./res/*.css ./res/*.js ./_site/assets 2>/dev/null || :
+cp ./conspectus-framework/res/*.css ./res/*.js ./_site/assets 2>/dev/null || :
 
 # push generated htmls back to repository
 if [ ${GH_TOKEN} ]
@@ -65,5 +65,5 @@ fi
 
 
 git show --name-status --oneline | tail -n +2
-message=$(git show --name-status --oneline | tail -n +2 | python ./telegram/message_generator.py "${2}")
-[[ -z "$TM_TOKEN" ]] || TM_TOKEN="$TM_TOKEN" CHAT='${3}' MSG="$message" node ./telegram/index
+message=$(git show --name-status --oneline | tail -n +2 | python ./conspectus-framework/telegram/message_generator.py "${2}")
+[[ -z "$TM_TOKEN" ]] || TM_TOKEN="$TM_TOKEN" CHAT='${3}' MSG="$message" node ./conspectus-framework/telegram/index

@@ -284,7 +284,7 @@ def generate_toc(toc_list):
     return toc
 
 
-def generate_htmls(github_host, pages_host, input_folder='./terms/input', output_folder='./terms/output', template_name='template.html'):
+def generate_htmls(github_host, pages_host, input_folder='./conspectus-framework/terms/input', output_folder='./conspectus-framework/terms/output', template_name='template.html'):
     files = [file for file in sorted(os.listdir(input_folder)) if file.endswith('.html')]
     content_template = '{}\n<script>\nvar terms = {};\n</script>'
     envs = []
@@ -360,7 +360,7 @@ def generate_htmls(github_host, pages_host, input_folder='./terms/input', output
 
 def main():
     github_host, pages_host, input_folder, output_folder = sys.argv[1:]
-    generate_htmls(github_host, pages_host, input_folder, output_folder, template_name='./ast/template.html')
+    generate_htmls(github_host, pages_host, input_folder, output_folder, template_name='./conspectus-framework/ast/template.html')
 
 
 if __name__ == '__main__':
