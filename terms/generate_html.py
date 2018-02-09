@@ -360,6 +360,10 @@ def generate_htmls(github_host, pages_host, input_folder='./conspectus-framework
         }))
 
 
+def generate_indicies():
+    pass
+
+
 def main():
     github_host, pages_host, input_folder, output_folder = sys.argv[1:]
     generate_htmls(github_host, pages_host, input_folder, output_folder, template_name='./conspectus-framework/ast/template.html')
