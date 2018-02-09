@@ -6,6 +6,8 @@ import os
 FRAMEWORK_DIR = './conspectus-framework'
 README_FILE = './readme.md'
 SITE_DIR = './_site'
+TEMPLATE_DIR = './_template'
+
 
 def find(path):
     def check_file(file, exts):
