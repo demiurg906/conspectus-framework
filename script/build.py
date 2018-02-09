@@ -60,16 +60,31 @@ def generate_table_of_content():
     return content
 
 
-def generate_folders(content):
-    os.chdir(SITE_DIR)
-    for dir in content['dirs']:
-        os.makedirs(dir)
+def generate_folders(content, base_dir):
+    if not os.path.exists(base_dir):
+        os.makedirs(base_dir)
+    os.chdir(base_dir)
+    for dir, _ in content['dirs']:
+        if not os.path.exists(dir):
+            os.makedirs(dir)
     os.chdir('..')
 
 
 def copy_images(content):
     for img in content['images']:
         shutil.copy(img, os.path.join(SITE_DIR, img))
+
+# images/tst_dir/hello.md
+# /home/demiurg/Programming/au-algorithms-sem_1/_template/images/tst_dir
+# hello.md
+
+def run_ast_script(content):
+    for source in content['sources']:
+        base_dir = os.path.abspath(os.curdir)
+        source_dir = os.path.join(*os.path.split(source)[:-1])
+        path = os.path.join(base_dir, TEMPLATE_DIR, source_dir)
+        source_filename = os.path.split(source)[-1]
+        subprocess.run(['node', './conspectus-framework/ast/index.js', source, path, source_filename])
 
 
 if __name__ == '__main__':
@@ -87,6 +102,8 @@ if __name__ == '__main__':
 
     content = generate_table_of_content()
     run_script('clone_repo.sh')
-    generate_folders(content)
+    generate_folders(content, TEMPLATE_DIR)
+    generate_folders(content, SITE_DIR)
     copy_images(content)
+    run_ast_script(content)
     run_script('build.sh')

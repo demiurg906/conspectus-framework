@@ -14,7 +14,7 @@ const math = require('remark-math');
 const highlight = require('remark-highlight.js');
 const fs = require('fs');
 
-process.argv.length <3 && (console.log(`node ${path.basename(process.argv[1])} source.md`) || process.exit(0));
+process.argv.length < 3 && (console.log(`node ${path.basename(process.argv[1])} source.md`) || process.exit(0));
 
 var headers = [];
 var terms = [];
@@ -80,7 +80,6 @@ function formulasProcessing(options = {}) {
     }
 }
 
-
 function exptractDescription(options = {}) {
     return (node, file) => { extract(node) };
 
@@ -97,6 +96,8 @@ function exptractDescription(options = {}) {
 
 
 sourceFileName = process.argv[2];
+resultFilePath = process.argv[3];
+resultFileName = resultFilePath + "/" + process.argv[4];
 sourceFile = vfile.readSync(sourceFileName);
 
 unified()
@@ -114,18 +115,19 @@ unified()
   .process(sourceFile)
   .then(file => {
     file.extname = ".html";
+    file.path = "_template/" + file.path;
     vfile.writeSync(file)
   })
   .catch(err => console.log('errors: ', err));
 
-termsFileName = sourceFileName.substr(0, sourceFileName.lastIndexOf(".")) + ".terms.json";
+termsFileName = resultFileName.substr(0, resultFileName.lastIndexOf(".")) + ".terms.json";
 fs.writeFile(termsFileName, JSON.stringify(terms),
         (err) => { if (err) return console.log(err);});
 
-headersFileName = sourceFileName.substr(0, sourceFileName.lastIndexOf(".")) + ".headers.json";
+headersFileName = resultFileName.substr(0, resultFileName.lastIndexOf(".")) + ".headers.json";
 fs.writeFile(headersFileName, JSON.stringify(headers),
         (err) => { if (err) return console.log(err);});
 
-descFileName = sourceFileName.substr(0, sourceFileName.lastIndexOf(".")) + ".desc.txt";
+descFileName = resultFileName.substr(0, resultFileName.lastIndexOf(".")) + ".desc.txt";
 fs.writeFile(descFileName, description.substring(0, 155).replace("\n", ""),
         (err) => { if (err) return console.log(err);});
