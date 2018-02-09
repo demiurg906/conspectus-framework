@@ -1,11 +1,8 @@
 #!/bin/bash
 
+# TODO: удалить за ненадобностью
 # make the template accessible from current dir
-ln -s ./conspectus-framework/ast/template.html 2>/dev/null || :
-
-# using the template, convert source markdown to html + json
-mkdir ./input 2>/dev/null || :
-find . -maxdepth 1 -name '*md' ! -name 'README.md' -print0 | xargs -n1 --null -t -I {} -- node ./conspectus-framework/ast/index.js {}
+# ln -s ./conspectus-framework/ast/template.html 2>/dev/null || :
 
 # generate the contents, move images & htmls the root folder
 python ./conspectus-framework/terms/generate_html.py "${1}" "${2}" . ./_site
