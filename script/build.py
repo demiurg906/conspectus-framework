@@ -12,8 +12,9 @@ except ModuleNotFoundError:
 
 
 def clean():
-    shutil.rmtree(SITE_DIR)
-    shutil.rmtree(TEMPLATE_DIR)
+    for folder in [SITE_DIR, TEMPLATE_DIR]:
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
 
 
 def generate_table_of_content():
