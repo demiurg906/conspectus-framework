@@ -54,10 +54,16 @@ MathJax.Hub.Config({
   </div>
 
   <article class="content">
+      {% if index_page and not main_page %}
+      <div class="navigation">
+          <a href="..">назад</a>
+      </div>
+      {% endif %}
+
       {% if not index_page %}
       <div class="navigation">
         <a href="{{ left_page }}">{% if left_page %}← взад{% endif %}</a>
-        <a href="index.html">на главную</a>
+        <a href="index.html">к оглавлению</a>
         <a href="{{ right_page }}">{% if right_page %}вперёд →{% endif %}</a>
       </div>
       {% endif %}
@@ -68,6 +74,12 @@ MathJax.Hub.Config({
           <a href="{{ left_page }}">{% if left_page %}← взад{% endif %}</a>
           <a href="index.html">на главную</a>
           <a href="{{ right_page }}">{% if right_page %}вперёд →{% endif %}</a>
+      </div>
+      {% endif %}
+
+      {% if index_page and not main_page %}
+      <div class="navigation">
+          <a href="..">назад</a>
       </div>
       {% endif %}
   </article>

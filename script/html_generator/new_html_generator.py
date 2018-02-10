@@ -102,7 +102,8 @@ def generate_folder_content(config: Config, folder: str, content: FolderContent)
             'meta_description': 'Конспект всех лекций А. Смаля',
             'index_page': True,
             'new_issue': NEW_ISSUE,
-            'host': HOST
+            'host': HOST,
+            'main_page': folder == '.'
         }))
         print('{} generated'.format(index_file))
 
