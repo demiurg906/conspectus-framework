@@ -14,6 +14,7 @@ except ModuleNotFoundError:
 
 CONTENT_TEMPLATE = '{}\n<script>\nvar terms = {};\n</script>'
 NEW_ISSUE = 'https://github.com/{}/issues/new'
+HOST = 'https://{}'
 
 
 def get_template_from_file(template):
@@ -100,7 +101,8 @@ def generate_folder_content(config: Config, folder: str, content: FolderContent)
             'meta_title': 'Конспект по алгоритмам',
             'meta_description': 'Конспект всех лекций А. Смаля',
             'index_page': True,
-            'new_issue': NEW_ISSUE
+            'new_issue': NEW_ISSUE,
+            'host': HOST
         }))
         print('{} generated'.format(index_file))
 
@@ -139,7 +141,8 @@ def generate_source_html_data(source: str):
         'content': CONTENT_TEMPLATE.format(html_content, terms),
         'meta_title': meta_title,
         'meta_description': description,
-        'new_issue': NEW_ISSUE
+        'new_issue': NEW_ISSUE,
+        'host': HOST
     })
 
     return result_html_file, toc_list, env
@@ -181,7 +184,7 @@ def generate_toc_dict(toc_list):
 
 def generate_prev_next_refs(config: Config, html_filenames: [str]) -> [(str, str)]:
     res = []
-    href_template = 'https://{}/'.format(config.pages_host) + '{}'
+    href_template = 'https://{}.github.io/'.format(config.pages_host) + '{}'
     for i in range(len(html_filenames)):
         left = None if i == 0 else href_template.format(html_filenames[i - 1])
         right = None if i == len(html_filenames) - 1 else href_template.format(html_filenames[i + 1])
@@ -192,6 +195,9 @@ def generate_prev_next_refs(config: Config, html_filenames: [str]) -> [(str, str
 def generate_htmls(content: Content, config: Config):
     global NEW_ISSUE
     NEW_ISSUE = NEW_ISSUE.format(config.github_host)
+
+    global HOST
+    HOST = HOST.format(config.github_host)
 
     folders = group_files_by_folders(content)
     for folder, folder_content in folders.items():
