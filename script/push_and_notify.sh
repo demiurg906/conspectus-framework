@@ -4,12 +4,8 @@
 # make the template accessible from current dir
 # ln -s ./conspectus-framework/ast/main_template.html 2>/dev/null || :
 
-# generate the contents, move images & htmls the root folder
-python ./conspectus-framework/terms/generate_html.py "${1}" "${2}" . ./_site
-cp ./source/*.jpg ./source/*.png ./source/*.svg ./_site 2> /dev/null || :
-
 mkdir -p ./_site/assets
-cp ./conspectus-framework/res/*.css ./res/*.js ./_site/assets 2>/dev/null || :
+cp ./conspectus-framework/res/*.css ./conspectus-framework/res/*.js ./_site/assets 2>/dev/null || :
 
 # push generated htmls back to repository
 if [ ${GH_TOKEN} ]
