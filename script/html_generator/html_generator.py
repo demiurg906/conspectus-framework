@@ -13,7 +13,7 @@ def get_toc_from_file(filename):
         return json.load(f)
 
 
-def generate_toc(toc_list):
+def generate_toc_dict(toc_list):
     it = iter(toc_list)
     toc = []
     current_h1 = {'h2': []}
@@ -47,7 +47,7 @@ def generate_toc(toc_list):
     return toc
 
 
-def generate_htmls(github_host, pages_host, input_folder='./conspectus-framework/terms/input', output_folder='./conspectus-framework/terms/output', template_name='template.html'):
+def generate_htmls(github_host, pages_host, input_folder='./conspectus-framework/terms/input', output_folder='./conspectus-framework/terms/output', template_name='main_template.html'):
     files = [file for file in sorted(os.listdir(input_folder)) if file.endswith('.html')]
     content_template = '{}\n<script>\nvar terms = {};\n</script>'
     envs = []
@@ -55,7 +55,7 @@ def generate_htmls(github_host, pages_host, input_folder='./conspectus-framework
     html_filenames = []
     new_issue = 'https://github.com/{}/issues/new'.format(github_host)
     for file in files:
-        if file == 'template.html':
+        if file == 'main_template.html':
             continue
         filename = '{}/{}'.format(input_folder, file)
         with open(filename) as f:
@@ -90,8 +90,9 @@ def generate_htmls(github_host, pages_host, input_folder='./conspectus-framework
             'new_issue': new_issue
         }))
 
-    toc = generate_toc(toc_list)
-    with open('./conspectus-framework/terms/n_template.html') as f:
+    # --------------------FILE TOC--------------------
+    toc = generate_toc_dict(toc_list)
+    with open('./conspectus-framework/terms/sources_toc_template.html') as f:
         ninja_template = ''.join(f.readlines())
         ninja_template = Template(ninja_template)
 
@@ -129,12 +130,12 @@ def generate_indices():
 
 def main():
     github_host, pages_host, input_folder, output_folder = sys.argv[1:]
-    generate_htmls(github_host, pages_host, input_folder, output_folder, template_name='./conspectus-framework/ast/template.html')
+    generate_htmls(github_host, pages_host, input_folder, output_folder, template_name='./conspectus-framework/ast/main_template.html')
 
 
 if __name__ == '__main__':
     """
-    usage: python generate_html.py input_folder output_folder
+    usage: python html_generator.py input_folder output_folder
     if no args, './input' './output' uses as default
     """
     main()
@@ -149,7 +150,7 @@ if __name__ == '__main__':
     # toc = [('hello.html', el) for el in toc]
     # toc = generate_toc(toc)
     #
-    # with open('terms/n_template.html') as f:
+    # with open('terms/sources_toc_template.html') as f:
     #     ninja_template = ''.join(f.readlines())
     #     ninja_template = Template(ninja_template)
     # page = ninja_template.render({'toc': toc})

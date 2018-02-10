@@ -2,7 +2,7 @@
 
 # TODO: удалить за ненадобностью
 # make the template accessible from current dir
-# ln -s ./conspectus-framework/ast/template.html 2>/dev/null || :
+# ln -s ./conspectus-framework/ast/main_template.html 2>/dev/null || :
 
 # generate the contents, move images & htmls the root folder
 python ./conspectus-framework/terms/generate_html.py "${1}" "${2}" . ./_site

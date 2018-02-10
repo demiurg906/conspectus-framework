@@ -212,12 +212,12 @@ def get_neerc_info(term: str):
 
 def get_info(term: str):
     wiki_info = get_wiki_info(term)
-    neerc_info = get_neerc_info(term)
+    # neerc_info = get_neerc_info(term)
     res = {}
     if wiki_info is not None:
         res['wiki'] = wiki_info
-    if neerc_info is not None:
-        res['neerc'] = neerc_info
+    # if neerc_info is not None:
+    #     res['neerc'] = neerc_info
     return res
 
 
