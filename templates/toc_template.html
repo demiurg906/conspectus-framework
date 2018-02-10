@@ -1,5 +1,18 @@
+{% if folders_toc %}
 <ol>
-    {% for h1 in toc %}
+    {% for path in folders_toc %}
+    <li class="h1">
+        <a href="{{ path.anchor }}">{{ path.title }}</a>
+    </li>
+    {% endfor %}
+</ol>
+{% endif %}
+{% if folder_toc and sources_toc %}
+<span class="toc-separator"></span>
+{% endif %}
+{% if sources_toc %}
+<ol>
+    {% for h1 in sources_toc %}
     <li class="h1">
         <a href="{{ h1.anchor }}">{{ h1.title }}</a>
         <ul>
@@ -19,3 +32,4 @@
     </li>
     {% endfor %}
 </ol>
+{% endif %}

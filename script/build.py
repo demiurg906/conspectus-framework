@@ -3,88 +3,92 @@ import shutil
 import subprocess
 import os
 
-FRAMEWORK_DIR = './conspectus-framework'
-README_FILE = './readme.md'
-SITE_DIR = './_site'
-TEMPLATE_DIR = './_template'
+try:
+    from .html_generator import new_html_generator
+    from .html_generator.constants import *
+except ModuleNotFoundError:
+    from html_generator import new_html_generator
+    from html_generator.constants import *
 
 
-def find(path):
-    def check_file(file, exts):
-        if file.lower() == README_FILE:
-            return False
-        file_name = os.path.split(file)[-1]
-        _, ext = os.path.splitext(file)
-        return os.path.isfile(file) and ext in exts and not file_name.startswith('.')
-
-    def check_source(file):
-        return check_file(file, {'.md'})
-
-    def check_image(file):
-        return check_file(file, {'.png', '.bmp', '.jpg', '.svg'})
-
-    def check_folder(dir):
-        dir_name = os.path.split(dir)[-1]
-        return os.path.isdir(dir) and dir != FRAMEWORK_DIR and not dir_name.startswith('.')
-
-    dir_content = list(map(lambda file: os.path.join(path, file), os.listdir(path)))
-
-    sources = list(filter(check_source, dir_content))
-    images = list(filter(check_image, dir_content))
-
-    data = {
-        'sources': sources,
-        'images': images,
-        'dirs': []
-    }
-
-    dirs_copy = list(filter(check_folder, dir_content))
-
-    for dir in dirs_copy:
-        d = find(dir)
-        if not (d['sources'] or d['images']):
-            continue
-        data['sources'].extend(d['sources'])
-        data['images'].extend(d['images'])
-        data['dirs'].extend(d['dirs'])
-    data['dirs'].append((path, bool(data['sources'])))
-    for l in data.values():
-        l.sort()
-    return data
+def clean():
+    shutil.rmtree(SITE_DIR)
+    shutil.rmtree(TEMPLATE_DIR)
 
 
 def generate_table_of_content():
-    content = find('./')
-    with open('__content__.json', 'w') as f:
-        json.dump(content, f)
-    return content
+    def find(path):
+        def check_file(file, exts):
+            if file.lower() == README_FILE:
+                return False
+            file_name = os.path.split(file)[-1]
+            _, ext = os.path.splitext(file)
+            return os.path.isfile(file) and ext in exts and not file_name.startswith('.')
+
+        def check_source(file):
+            return check_file(file, {'.md'})
+
+        def check_image(file):
+            return check_file(file, {'.png', '.bmp', '.jpg', '.svg'})
+
+        def check_folder(dir):
+            dir_name = os.path.split(dir)[-1]
+            return os.path.isdir(dir) and dir != FRAMEWORK_DIR and not dir_name.startswith('.')
+
+        dir_content = list(map(lambda file: os.path.join(path, file), os.listdir(path)))
+
+        sources = list(filter(check_source, dir_content))
+        images = list(filter(check_image, dir_content))
+
+        data = Content([], sources, images)
+
+        dirs_copy = list(filter(check_folder, dir_content))
+
+        for dir in dirs_copy:
+            d = find(dir)
+            if not (d.sources or d.images):
+                continue
+            data.sources.extend(d.sources)
+            data.images.extend(d.images)
+            data.folders.extend(d.folders)
+        data.folders.append((path, bool(data.sources)))
+        for l in data:
+            l.sort()
+        return Content(
+            folders=list(map(lambda p: (normalize_path(p[0]), p[1]), data.folders)),
+            sources=list(map(normalize_path, data.sources)),
+            images=list(map(normalize_path, data.images))
+        )
+
+    return find('./')
 
 
-def generate_folders(content, base_dir):
+def generate_folders(content: Content, base_dir):
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     os.chdir(base_dir)
-    for dir, _ in content['dirs']:
+    for dir, _ in content.folders:
         if not os.path.exists(dir):
             os.makedirs(dir)
     os.chdir('..')
 
 
-def copy_images(content):
-    for img in content['images']:
+def copy_images(content: Content):
+    for img in content.images:
         shutil.copy(img, os.path.join(SITE_DIR, img))
 
-# images/tst_dir/hello.md
-# /home/demiurg/Programming/au-algorithms-sem_1/_template/images/tst_dir
-# hello.md
 
-def run_ast_script(content):
-    for source in content['sources']:
+def run_ast_script(content: Content):
+    for source in content.sources:
         base_dir = os.path.abspath(os.curdir)
         source_dir = os.path.join(*os.path.split(source)[:-1])
         path = os.path.join(base_dir, TEMPLATE_DIR, source_dir)
         source_filename = os.path.split(source)[-1]
         subprocess.run(['node', './conspectus-framework/ast/index.js', source, path, source_filename])
+
+
+def generate_html(content: Content, config: Config):
+    new_html_generator.generate_htmls(content, config)
 
 
 if __name__ == '__main__':
@@ -97,13 +101,23 @@ if __name__ == '__main__':
     pages_host = '{}/{}'.format(username, repo)
     telegram_chat_id = config.get('chat_id', 0)
 
+    config = Config(username, repo, github_host, pages_host)
+
+
     def run_script(script):
         subprocess.run([f'./conspectus-framework/script/{script}', pages_host, github_host, str(telegram_chat_id)])
 
-    content = generate_table_of_content()
-    run_script('clone_repo.sh')
-    generate_folders(content, TEMPLATE_DIR)
-    generate_folders(content, SITE_DIR)
-    copy_images(content)
-    run_ast_script(content)
-    run_script('build.sh')
+
+    if DEBUG:
+        content = generate_table_of_content()
+        generate_html(content, config)
+    else:
+        clean()
+        content = generate_table_of_content()
+        run_script('clone_repo.sh')
+        generate_folders(content, TEMPLATE_DIR)
+        generate_folders(content, SITE_DIR)
+        copy_images(content)
+        run_ast_script(content)
+        generate_html(content, config)
+        run_script('push_and_notify.sh')
