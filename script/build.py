@@ -4,10 +4,10 @@ import subprocess
 import os
 
 try:
-    from .html_generator import new_html_generator
+    from .html_generator.html_generator import HtmlGenerator
     from .html_generator.constants import *
 except ModuleNotFoundError:
-    from html_generator import new_html_generator
+    from html_generator.html_generator import HtmlGenerator
     from html_generator.constants import *
 
 
@@ -89,7 +89,7 @@ def run_ast_script(content: Content):
 
 
 def generate_html(content: Content, config: Config):
-    new_html_generator.generate_htmls(content, config)
+    HtmlGenerator(content, config).generate_htmls()
 
 
 if __name__ == '__main__':
