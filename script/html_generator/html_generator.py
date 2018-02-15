@@ -27,7 +27,7 @@ class HtmlGenerator:
         self.content = content
         self.config = config
         self.content_template = '{}\n<script>\nvar terms = {};\n</script>'
-        self.new_issue = 'https://github.com/{}/issues/new'.format(config.github_host)
+        self.new_issue = 'https://github.com/{}/{}/issues/new'.format(config.username, config.repo)
         self.host = 'https://{}'.format(config.github_host)
         self.main_template = get_template_from_file(MAIN_TEMPLATE_FILE)
         self.toc_template = get_template_from_file(TOC_TEMPLATE_FILE)
