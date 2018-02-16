@@ -16,7 +16,11 @@ mkdir _site
 echo "${1}"
 
 # clone remote repo to "_site"
-git clone "https://${GH_TOKEN}@github.com/${1}.git" --branch gh-pages --depth=1 ./_site
+repo="https://${GH_TOKEN}@github.com/${1}.git"
+git clone "$repo" --branch gh-pages --depth=1 ./_site || {
+  git clone "$repo" --depth=1 ./_site;
+  git checkout -b gh-pages;
+}
 
 # clean repo from all files
 ( cd ./_site && git rm -rf --ignore-unmatch ./* )
