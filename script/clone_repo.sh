@@ -19,7 +19,9 @@ echo "${1}"
 repo="https://${GH_TOKEN}@github.com/${1}.git"
 git clone "$repo" --branch gh-pages --depth=1 ./_site || {
   git clone "$repo" --depth=1 ./_site;
+  cd ./_site;
   git checkout -b gh-pages;
+  cd ..;
 }
 
 # clean repo from all files
