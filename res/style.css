@@ -152,8 +152,9 @@ blockquote {
 }
 
 code {
-  padding: 0.2em 0.4em;
+  padding: 0.15em 0.35em;
   font-family: monospace, monospace;
+  font-size: 0.9em;
   background: #f4f4f4;
   border-radius: 3.7px;
   color: #616161;
