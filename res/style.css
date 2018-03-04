@@ -113,6 +113,7 @@ a:hover {
 
 .content ul {
   list-style: square inside;
+  margin-bottom: 1em;
 }
 
 .content li, .content li {
@@ -126,6 +127,7 @@ a:hover {
 
 .content ol {
   list-style: decimal;
+  margin-bottom: 1em;
 }
 
 /*.content .term {
