@@ -246,3 +246,10 @@ pre code {
 .navigation:last-child a {
   margin-top: 2em;
 }
+
+hr {
+  border: 0;
+  border-bottom: 1px solid #ccc;
+  margin: 1.5em;
+  height: 0;
+}
