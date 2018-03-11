@@ -101,8 +101,10 @@ if __name__ == '__main__':
     github_host = '{}.github.io/{}'.format(username, repo)
     pages_host = '{}/{}'.format(username, repo)
     telegram_chat_id = config.get('chat_id', 0)
+    meta_title = config.get('meta_title', '')
+    meta_description = config.get('meta_description', '')
 
-    config = Config(username, repo, github_host, pages_host)
+    config = Config(username, repo, meta_title, meta_description, github_host, pages_host)
 
 
     def run_script(script):

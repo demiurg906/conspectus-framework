@@ -103,8 +103,8 @@ class HtmlGenerator:
             # TODO: change meta
             f.write(self.main_template.render({
                 'content': toc_html,
-                'meta_title': 'Конспект по алгоритмам',
-                'meta_description': 'Конспект всех лекций А. Смаля',
+                'meta_title': self.config.meta_title,
+                'meta_description': self.config.meta_description,
                 'index_page': True,
                 'new_issue': self.new_issue,
                 'host': self.host,

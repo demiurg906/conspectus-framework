@@ -1,5 +1,7 @@
 {
   "username": "username",
   "repo": "repository name",
+  "meta_description": "Конспект всех лекций А. Смаля",
+  "meta_title": "Конспект по алгоритмам",
   "chat_id": 0
 }

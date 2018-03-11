@@ -10,7 +10,7 @@ TEMPLATE_DIR = './_template'
 MAIN_TEMPLATE_FILE = './conspectus-framework/templates/main_template.html'
 TOC_TEMPLATE_FILE = './conspectus-framework/templates/toc_template.html'
 
-Config = namedtuple('Config', ['username', 'repo', 'github_host', 'pages_host'])
+Config = namedtuple('Config', ['username', 'repo', 'meta_title', 'meta_description', 'github_host', 'pages_host'])
 Content = namedtuple('Content', ['folders', 'sources', 'images'])
 
 
