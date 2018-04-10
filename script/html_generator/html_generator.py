@@ -162,7 +162,7 @@ class HtmlGenerator:
             while True:
                 file, el = next(it)
                 tag = int(el['tag'])
-                title = el['title']
+                title = el['title'] if 'title' in el else ''
                 anchor = '{}#{}'.format(file, el['anchor'])
                 try:
                     if tag == 1:
