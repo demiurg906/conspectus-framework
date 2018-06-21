@@ -30,7 +30,7 @@ def generate_table_of_content():
             return check_file(file, {'.md'})
 
         def check_image(file):
-            return check_file(file, {'.png', '.bmp', '.jpg', '.svg'})
+            return check_file(file, {'.png', '.bmp', '.jpg', '.svg', '.gif'})
 
         def check_folder(dir):
             dir_name = os.path.split(dir)[-1]
